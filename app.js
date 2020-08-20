@@ -5,8 +5,23 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var sassMiddleware = require('node-sass-middleware');
 
+//connection string for database
+var mongoose = require('mongoose')
+mongoose.connect('mongodb://localhost/chirp',{
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+
+//connection related function 
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  //we're connected
+  console.log('db connected');
+})
+
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+//var usersRouter = require('./routes/users');
 var accountRouter = require('./routes/accounts');
 
 var app = express();
@@ -28,7 +43,7 @@ app.use(sassMiddleware({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+//app.use('/users', usersRouter);
 app.use('/', accountRouter);
 
 // catch 404 and forward to error handler
